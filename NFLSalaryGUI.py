@@ -4,18 +4,43 @@ Created on Sun Nov 27 01:47:52 2022
 
 @author: lbere
 """
-
+import psycopg2
 import tkinter as tk
 from tkinter import ttk
+from tkinter import *
+
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
 NavigationToolbar2Tk)
+###########################
+#Database retrieval code
+db_window = tk.Tk()
+conn = psycopg2.connect(
+        database="salaries_NFL",
+        user="new",
+        password="admin",
+        host="localhost",
+        port="5432"
+        )
+db = conn.cursor()
 
+x = 'Broncos'
+y = 'Patriots'
+db.execute("SELECT Mascot.salary, Mascot.name, Team.name FROM Mascot, Team WHERE (Team.name = \'{0}\' OR Team.name = \'{1}\') AND Team.teamid = Mascot.teamid ORDER BY Mascot.salary DESC".format(x,y))
+
+i=0
+for Mascot in db:
+    for j in range(len(Mascot)):
+        e = Entry(db_window,width=10, fg='blue')
+        e.grid(row=i, column=j)
+        e.insert(END, Mascot[j])
+    i=i+1
+###########################
 window = tk.Tk()
 window.attributes('-fullscreen',True)
 window.title('Welcome to NFL Salary Database!')
-window.geometry('350x200')
+window.geometry('1280x720')
 
 tabControl = ttk.Notebook(window)
 mainTab = ttk.Frame(tabControl)
