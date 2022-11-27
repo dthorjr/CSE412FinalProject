@@ -13,6 +13,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 
 window = tk.Tk()
+window.attributes('-fullscreen',True)
 window.title('Welcome to NFL Salary Database!')
 window.geometry('350x200')
 
@@ -39,8 +40,10 @@ coachBtn = tk.Button(mainTab, text = 'Coaches')
 #coachBtn.grid(column = 8, row = 12)
 mascotBtn = tk.Button(mainTab, text = 'Mascots')
 #mascotBtn.grid(column = 16, row = 12)
+closeBtn = tk.Button(mainTab, text = 'Close', command=window.destroy)
 header.pack()
 playerBtn.pack()
 coachBtn.pack()
 mascotBtn.pack()
+closeBtn.pack()
 window.mainloop()
