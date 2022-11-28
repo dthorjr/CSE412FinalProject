@@ -4,41 +4,20 @@ Created on Sun Nov 27 01:47:52 2022
 
 @author: lbere
 """
-import psycopg2
+
 import tkinter as tk
 from tkinter import ttk
-from tkinter import *
 
+import pandas as pd
+import numpy as np
 
+import matplotlib
+matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
-NavigationToolbar2Tk)
-###########################
-#Database retrieval code
-db_window = tk.Tk()
-conn = psycopg2.connect(
-        database="salaries_NFL",
-        user="new",
-        password="admin",
-        host="localhost",
-        port="5432"
-        )
-db = conn.cursor()
 
-x = 'Broncos'
-y = 'Patriots'
-db.execute("SELECT Mascot.salary, Mascot.name, Team.name FROM Mascot, Team WHERE (Team.name = \'{0}\' OR Team.name = \'{1}\') AND Team.teamid = Mascot.teamid ORDER BY Mascot.salary DESC".format(x,y))
-
-i=0
-for Mascot in db:
-    for j in range(len(Mascot)):
-        e = Entry(db_window,width=10, fg='blue')
-        e.grid(row=i, column=j)
-        e.insert(END, Mascot[j])
-    i=i+1
-###########################
 window = tk.Tk()
-window.attributes('-fullscreen',True)
 window.title('Welcome to NFL Salary Database!')
 window.geometry('1280x720')
 
@@ -65,10 +44,23 @@ coachBtn = tk.Button(mainTab, text = 'Coaches')
 #coachBtn.grid(column = 8, row = 12)
 mascotBtn = tk.Button(mainTab, text = 'Mascots')
 #mascotBtn.grid(column = 16, row = 12)
-closeBtn = tk.Button(mainTab, text = 'Close', command=window.destroy)
 header.pack()
 playerBtn.pack()
 coachBtn.pack()
 mascotBtn.pack()
-closeBtn.pack()
+
+###graph fun
+mascotNames = ['Bacon','Avocado','Lettuce','Egg']
+mascotSalary = [420,69,12,62]
+c = ['red', 'yellow', 'black', 'blue', 'orange']
+
+figure = plt.Figure(figsize=(6,5), dpi=100)
+ax = figure.add_subplot(111)
+chart_type = FigureCanvasTkAgg(figure, window)
+chart_type.get_tk_widget().pack()
+x_pos = np.arange(len(mascotNames))
+ax.bar(x_pos, mascotSalary, color = c)
+ax.set_title('Mascot Salaries')
+
+
 window.mainloop()
