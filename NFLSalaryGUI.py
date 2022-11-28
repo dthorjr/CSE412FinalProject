@@ -59,7 +59,7 @@ avgSalaries = [69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,
                420,69,420,69,420,69,420,69,420,69,420,69,420,69]
 colors = ['red', 'yellow', 'black', 'blue', 'orange', 'cyan', 'green']
 
-ttk.Label(teamTab, text = 'Teams Page', font = ('Arial', 25)).pack()
+ttk.Label(teamTab, text = 'NFL Teams Page', font = ('Arial', 25)).pack()
 ttk.Label(teamTab, text = '').pack()
 
 #team average graph
@@ -94,7 +94,7 @@ drop.bind('<<ComboboxSelected>>', team_changed)
 
 
 ###positions tab
-ttk.Label(positionTab, text = 'Positions Page', font = ('Arial', 25)).pack()
+ttk.Label(positionTab, text = 'NFL Positions Page', font = ('Arial', 25)).pack()
 ttk.Label(positionTab, text = '').pack()
 
 positions = ['Quarterback','Running Back', 'Full Back','Wide Receiver',
@@ -136,12 +136,12 @@ dropPos.bind('<<ComboboxSelected>>', pos_changed)
 
 
 ###coaches tab
-ttk.Label(coachTab, text = 'Coaches Page', font = ('Arial', 25)).pack()
+ttk.Label(coachTab, text = 'NFL Coaches Page', font = ('Arial', 25)).pack()
 ttk.Label(coachTab, text = '').pack()
 
 #data grab
 coaches = ['poop','poopPants']
-coachSalaries = ['69','420']
+coachSalaries = ['690','420']
 
 #coach graph
 figure = plt.Figure(figsize=(6,5), dpi=100)
@@ -154,7 +154,7 @@ ax.set_title('Salaries for NFL Coaches')
 
 
 ###mascot tab
-ttk.Label(mascotTab, text = 'Mascots Page', font = ('Arial', 25)).pack()
+ttk.Label(mascotTab, text = 'NFL Mascots Page', font = ('Arial', 25)).pack()
 ttk.Label(mascotTab, text = '').pack()
 
 #data grab
