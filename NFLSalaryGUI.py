@@ -43,6 +43,10 @@ ttk.Label(mainTab, text = '').pack()
 ttk.Label(mainTab, text = 'Darin Thornton').pack()
 ttk.Label(mainTab, text = 'Jacob Nootens').pack()
 ttk.Label(mainTab, text = 'Lauren Beresford').pack()
+ttk.Label(mainTab, text = '').pack()
+ttk.Label(mainTab, text = 'Welcome to the NFL Salary Database').pack()
+ttk.Label(mainTab, text = 'Where you can view the differences in pay between').pack()
+ttk.Label(mainTab, text = 'Teams, positions, coaches, and mascots!').pack()
 
 
 ###team tab
@@ -70,9 +74,9 @@ ax.set_title('Average Salaries by Team')
 #team dropdown menu
 ttk.Label(teamTab, text = '').pack()
 ttk.Label(teamTab, text = 'Select a Team').pack()
-selected = StringVar()
-selected.set('Cardinals')
-drop = ttk.Combobox(teamTab, textvariable = selected)
+selectedTeam = StringVar()
+selectedTeam.set('Cardinals')
+drop = ttk.Combobox(teamTab, textvariable = selectedTeam)
 drop['values'] = teams
 drop['state'] = 'readonly'
 drop.pack()
@@ -82,7 +86,7 @@ currentTeam = ''
 def team_changed(event):
     ttk.Label(teamTab, text = 'Current Team is ' + str(drop.get())).pack()
     currentTeam = str(drop.get())
-    #print(db.execute("SELECT Player.firstName, Mascot.lastName, Player.salary 
+    #print(db.execute("SELECT Player.firstName, Player.lastName, Player.salary 
     #FROM Player, Team 
     #WHERE Team.teamid = Player.teamid AND Team.name = currentTeam
     #ORDER BY Player.salary DESC"))
@@ -101,7 +105,7 @@ positions = ['Quarterback','Running Back', 'Full Back','Wide Receiver',
 avgPosSalaries = [69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,
                420,69,420]
 
-#team graph
+#positions graph
 figure = plt.Figure(figsize=(6,5), dpi=100)
 ax = figure.add_subplot(111)
 chart_type = FigureCanvasTkAgg(figure, positionTab)
@@ -110,19 +114,54 @@ x_pos = np.arange(len(positions))
 ax.bar(x_pos, avgPosSalaries, color = colors)
 ax.set_title('Average Salaries by Position')
 
-#team dropdown menu
+#positions dropdown menu
 ttk.Label(positionTab, text = '').pack()
 ttk.Label(positionTab, text = 'Select a Position').pack()
 selected = StringVar()
 selected.set('Quarterback')
-drop2 = OptionMenu(positionTab, selected, *positions)
-drop2.pack()
+dropPos = ttk.Combobox(positionTab, textvariable = selected)
+dropPos['values'] = positions
+dropPos['state'] = 'readonly'
+dropPos.pack()
 
-###graph fun
+#print table of players by position
+def pos_changed(event):
+    ttk.Label(positionTab, text = 'Current Position is ' + str(dropPos.get())).pack()
+    currentPos = str(dropPos.get())
+    #print(db.execute("SELECT Player.firstName, Player.lastName, Player.salary 
+    #FROM Player, Position 
+    #WHERE Position.positionid = Player.positionid AND Position.name = currentPos
+    #ORDER BY Player.salary DESC"))
+dropPos.bind('<<ComboboxSelected>>', pos_changed)
+
+
+###coaches tab
+ttk.Label(coachTab, text = 'Coaches Page', font = ('Arial', 25)).pack()
+ttk.Label(coachTab, text = '').pack()
+
+#data grab
+coaches = ['poop','poopPants']
+coachSalaries = ['69','420']
+
+#coach graph
+figure = plt.Figure(figsize=(6,5), dpi=100)
+ax = figure.add_subplot(111)
+chart_type = FigureCanvasTkAgg(figure, coachTab)
+chart_type.get_tk_widget().pack()
+x_pos = np.arange(len(coaches))
+ax.bar(x_pos, coachSalaries, color = colors)
+ax.set_title('Salaries for NFL Coaches')
+
+
+###mascot tab
+ttk.Label(mascotTab, text = 'Mascots Page', font = ('Arial', 25)).pack()
+ttk.Label(mascotTab, text = '').pack()
+
+#data grab
 mascotNames = ['Bacon','Avocado','Lettuce','Egg']
 mascotSalary = [420,69,12,62]
 
-
+#mascot graph
 figure = plt.Figure(figsize=(6,5), dpi=100)
 ax = figure.add_subplot(111)
 chart_type = FigureCanvasTkAgg(figure, mascotTab)
