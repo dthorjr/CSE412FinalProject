@@ -171,14 +171,43 @@ dropPos['values'] = positions
 dropPos['state'] = 'readonly'
 dropPos.pack()
 
-
+listPositionFirstName = [] 
+listPositionLastName = []
+listPositionSalary = []
 #print table of players by position
+
 def pos_changed(event):
-        
+    listPositionFirstName = [] 
+    listPositionLastName = []
+    listPositionSalary = []
+    
     ttk.Label(positionTab, text = 'Current Position is ' + str(dropPos.get())).pack()
     currentPos = str(dropPos.get())
-    #db.execute("SELECT Player.firstName, Player.lastName, Player.salary FROM Player, Position WHERE Position.positionid = Player.positionid AND Position.positionname = \'{0}\' ORDER BY Player.salary DESC".format(currentPos))
+    
+    T.delete(0.0,'end')
+    
+    db.execute("SELECT Player.firstName, Player.lastName, Player.salary FROM Player, Position WHERE Position.positionid = Player.positionid AND Position.positionname = \'{0}\' ORDER BY Player.salary DESC".format(currentPos))
 
+    for Player in db:
+        firstName, lastName, salary = Player
+        listPositionFirstName.append(firstName)
+        listPositionLastName.append(lastName)
+        listPositionSalary.append(salary)
+        
+    T.insert(tk.END, 'First Name:')
+    T.insert(tk.END, '\t\t')
+    T.insert(tk.END, 'Last Name:')
+    T.insert(tk.END, '\t\t')
+    T.insert(tk.END, 'Salary:')
+    T.insert(tk.END, '\n')
+    
+    for i in range(10):
+        T.insert(tk.END, listPositionFirstName[i])
+        T.insert(tk.END, '\t \t')
+        T.insert(tk.END, listPositionLastName[i])
+        T.insert(tk.END, '\t \t')
+        T.insert(tk.END, listPositionSalary[i])
+        T.insert(tk.END, '\n')
         
 dropPos.bind('<<ComboboxSelected>>', pos_changed)
 
@@ -188,16 +217,21 @@ ttk.Label(coachTab, text = 'NFL Coaches Page', font = ('Arial', 25)).pack()
 ttk.Label(coachTab, text = '').pack()
 
 #data grab
-coaches = ['poop','poopPants']
-coachSalaries = ['690','420']
+listCoachLastName = []
+listCoachSalary = []
+db.execute("SELECT coach.lastname,coach.salary FROM coach")
+for Coach in db:
+    lastName, salary = Coach
+    listCoachLastName.append(lastName)
+    listCoachSalary.append(salary)
 
 #coach graph
 figure = plt.Figure(figsize=(6,5), dpi=100)
 ax = figure.add_subplot(111)
 chart_type = FigureCanvasTkAgg(figure, coachTab)
 chart_type.get_tk_widget().pack()
-x_pos = np.arange(len(coaches))
-ax.bar(x_pos, coachSalaries, color = teamColors)
+#x_pos = np.arange(len(coaches))
+ax.bar(listCoachLastName, listCoachSalary, color = teamColors)
 ax.set_title('Salaries for NFL Coaches')
 
 
