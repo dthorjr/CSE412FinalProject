@@ -66,10 +66,14 @@ ttk.Label(teamTab, text = '').pack()
 figure = plt.Figure(figsize=(6,5), dpi=100)
 ax = figure.add_subplot(111)
 chart_type = FigureCanvasTkAgg(figure, teamTab)
-chart_type.get_tk_widget().pack()
+chart_type.get_tk_widget().pack(side = LEFT)
 x_pos = np.arange(len(teams))
 ax.bar(x_pos, avgSalaries, color = colors)
 ax.set_title('Average Salaries by Team')
+
+#query and calculate average salary
+avgSalary = 69000
+ttk.Label(teamTab, text = 'The average salary across all teams is: $' + str(avgSalary)).pack()
 
 #team dropdown menu
 ttk.Label(teamTab, text = '').pack()
@@ -109,10 +113,14 @@ avgPosSalaries = [69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,
 figure = plt.Figure(figsize=(6,5), dpi=100)
 ax = figure.add_subplot(111)
 chart_type = FigureCanvasTkAgg(figure, positionTab)
-chart_type.get_tk_widget().pack()
+chart_type.get_tk_widget().pack(side = LEFT)
 x_pos = np.arange(len(positions))
 ax.bar(x_pos, avgPosSalaries, color = colors)
 ax.set_title('Average Salaries by Position')
+
+#query and calculate average salary
+avgSalary = 69000
+ttk.Label(positionTab, text = 'The average salary across all positions is: $' + str(avgSalary)).pack()
 
 #positions dropdown menu
 ttk.Label(positionTab, text = '').pack()
@@ -132,6 +140,8 @@ def pos_changed(event):
     #FROM Player, Position 
     #WHERE Position.positionid = Player.positionid AND Position.name = currentPos
     #ORDER BY Player.salary DESC"))
+    avgSalary = 69000
+    #ttk.Label(positionTab, text = 'The average salary for the ' + str(dropPos.get()) + ' is: $' + str(avgSalary)).pack()
 dropPos.bind('<<ComboboxSelected>>', pos_changed)
 
 
@@ -144,13 +154,16 @@ coaches = ['poop','poopPants']
 coachSalaries = ['690','420']
 
 #coach graph
-figure = plt.Figure(figsize=(6,5), dpi=100)
+figure = plt.Figure(figsize=(7,6), dpi=100)
 ax = figure.add_subplot(111)
 chart_type = FigureCanvasTkAgg(figure, coachTab)
 chart_type.get_tk_widget().pack()
 x_pos = np.arange(len(coaches))
 ax.bar(x_pos, coachSalaries, color = colors)
 ax.set_title('Salaries for NFL Coaches')
+
+#query and calculate average salary
+ttk.Label(coachTab, text = 'The average salary for NFL coaches is: $' + str(avgSalary)).pack()
 
 
 ###mascot tab
@@ -169,6 +182,9 @@ chart_type.get_tk_widget().pack()
 x_pos = np.arange(len(mascotNames))
 ax.bar(x_pos, mascotSalary, color = colors)
 ax.set_title('Mascot Salaries')
+
+#query and calculate average salary
+ttk.Label(mascotTab, text = 'The average salary for NFL mascots is: $' + str(avgSalary)).pack()
 
 
 window.mainloop()
