@@ -115,7 +115,7 @@ def team_changed(event):
     ttk.Label(teamTab, text = 'Current Team is ' + str(drop.get())).pack()
     currentTeam = str(drop.get())
     
-    db.execute("SELECT Player.firstName, Player.lastName, Player.salary FROM Player, Team  WHERE Team.teamid = Player.teamid AND Team.name = 'Cardinals' ORDER BY Player.salary DESC")#.format(currentTeam))
+    db.execute("SELECT Player.firstName, Player.lastName, Player.salary FROM Player, Team  WHERE Team.teamid = Player.teamid AND Team.name = \'{0}\' ORDER BY Player.salary DESC".format(currentTeam))
     for Player in db:
         firstName, lastName, salary = Player
         listTeamFirstName.append(firstName)
