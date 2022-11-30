@@ -240,16 +240,22 @@ ttk.Label(mascotTab, text = 'NFL Mascots Page', font = ('Arial', 25)).pack()
 ttk.Label(mascotTab, text = '').pack()
 
 #data grab
-mascotNames = ['Bacon','Avocado','Lettuce','Egg']
-mascotSalary = [420,69,12,62]
+listMascotName = []
+listMascotSalary = []
+
+db.execute("SELECT Mascot.salary, Mascot.name, Team.name FROM Mascot, Team WHERE Team.teamid = Mascot.teamid ORDER BY Mascot.salary DESC")
+for Mascot in db:
+    salary, name, teamName = Mascot
+    listMascotName.append(name)
+    listMascotSalary.append(salary)
 
 #mascot graph
 figure = plt.Figure(figsize=(6,5), dpi=100)
 ax = figure.add_subplot(111)
 chart_type = FigureCanvasTkAgg(figure, mascotTab)
 chart_type.get_tk_widget().pack()
-x_pos = np.arange(len(mascotNames))
-ax.bar(x_pos, mascotSalary, color = teamColors)
+#x_pos = np.arange(len(mascotNames))
+ax.bar(listMascotName, listMascotSalary, color = teamColors)
 ax.set_title('Mascot Salaries')
 
 
