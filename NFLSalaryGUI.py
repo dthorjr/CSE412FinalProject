@@ -91,9 +91,11 @@ ttk.Label(teamTab, text = 'NFL Teams Page', font = ('Arial', 25)).pack()
 ttk.Label(teamTab, text = '').pack()
 
 #team average graph
-figure = plt.Figure(figsize=(6,6), dpi=100)
+figure = plt.Figure(figsize=(10,10), dpi=70)
 ax = figure.add_subplot(111)
 ax.tick_params(axis = 'x', rotation = 90)
+ax.set_xlabel("Team Name")
+ax.set_ylabel("Salary (10 Millions)")
 chart_type = FigureCanvasTkAgg(figure, teamTab)
 chart_type.get_tk_widget().pack(side = LEFT)
 #x_pos = np.arange(len(teams))
@@ -169,9 +171,11 @@ ttk.Label(positionTab, text = 'NFL Positions Page', font = ('Arial', 25)).pack()
 ttk.Label(positionTab, text = '').pack()
 
 #positions graph
-figure = plt.Figure(figsize=(6,6), dpi=100)
+figure = plt.Figure(figsize=(12,12), dpi=60)
 ax = figure.add_subplot(111)
-ax.tick_params(axis = 'x', rotation = 90)
+ax.tick_params(axis = 'x', rotation = 50)
+ax.set_xlabel("Position Name")
+ax.set_ylabel("Salary (10 Millions)")
 chart_type = FigureCanvasTkAgg(figure, positionTab)
 chart_type.get_tk_widget().pack(side = LEFT)
 #x_pos = np.arange(len(positions))
@@ -257,9 +261,11 @@ for Coach in db:
     listCoachSalary.append(salary)
 
 #coach graph
-figure = plt.Figure(figsize=(6,6), dpi=100)
+figure = plt.Figure(figsize=(10,10), dpi=70)
 ax = figure.add_subplot(111)
 ax.tick_params(axis = 'x', rotation = 90)
+ax.set_xlabel("Coach Last Name")
+ax.set_ylabel("Salary (10 Millions)")
 chart_type = FigureCanvasTkAgg(figure, coachTab)
 chart_type.get_tk_widget().pack(side = LEFT)
 #x_pos = np.arange(len(coaches))
@@ -327,9 +333,11 @@ for Mascot in db:
     listMascotSalary.append(salary)
 
 #mascot graph
-figure = plt.Figure(figsize=(6,6), dpi=100)
+figure = plt.Figure(figsize=(12,12), dpi=65)
 ax = figure.add_subplot(111)
-ax.tick_params(axis = 'x', rotation = 90)
+ax.tick_params(axis = 'x', rotation = 70)
+ax.set_xlabel("Mascot Name")
+ax.set_ylabel("Salary (Thousands)")
 chart_type = FigureCanvasTkAgg(figure, mascotTab)
 chart_type.get_tk_widget().pack(side = LEFT)
 #x_pos = np.arange(len(mascotNames))
