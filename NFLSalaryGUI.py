@@ -20,6 +20,8 @@ from matplotlib.figure import Figure
 
 import psycopg2
 
+import math
+
 #connect to database
 conn = psycopg2.connect(
 database="salaries_NFL",
@@ -84,14 +86,6 @@ for Position in db:
 
 
 ###team tab
-'''teams = ['Cardinals','Ravens','Bills','Panthers','Bears','Bengals','Browns',
-         'Cowboys','Broncos','Lions','Packers','Texans','Colts',
-         'Jaguars','Chiefs','Raiders','Chargers','Rams','Dolphins',
-         'Vikings','Patriots','Saints','Giants','Jets','Eagles',
-         'Steelers','49ers','Seahawks','Buccaneers','Titans','Commanders']
-avgSalaries = [69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,
-               420,69,420,69,420,69,420,69,420,69,420,69,420,69]
-colors = ['red', 'yellow', 'black', 'blue', 'orange', 'cyan', 'green']'''
 
 ttk.Label(teamTab, text = 'NFL Teams Page', font = ('Arial', 25)).pack()
 ttk.Label(teamTab, text = '').pack()
@@ -107,7 +101,11 @@ ax.bar(teams, avgSalaries, color = teamColors)
 ax.set_title('Average Salaries by Team')
 
 #query and calculate average salary
-avgSalary = 69000
+db.execute("SELECT avg(Player.salary + Coach.salary + Mascot.salary) FROM Player, Coach, Mascot")
+for Salary in db:
+    avgSalary = Salary[0]
+avgSalary = math.trunc(avgSalary)
+
 ttk.Label(teamTab, text = 'The average salary across all teams is: $' + str(avgSalary)).pack()
 
 #team dropdown menu
@@ -125,8 +123,8 @@ listTeamFirstName = []
 listTeamLastName = []
 listTeamSalary = []
 
-T = Text(window, height = 50, width = 50)
-T.pack()
+scroll = Scrollbar(teamTab, orient = 'vertical')
+T = Text(teamTab, width = 50, yscrollcommand = scroll.set)
 
 #print table of players
 def team_changed(event):
@@ -152,13 +150,16 @@ def team_changed(event):
     T.insert(tk.END, 'Salary:')
     T.insert(tk.END, '\n')
     
-    for i in range(10):
+    for i in range(len(listTeamFirstName)):
         T.insert(tk.END, listTeamFirstName[i])
         T.insert(tk.END, '\t \t')
         T.insert(tk.END, listTeamLastName[i])
         T.insert(tk.END, '\t \t')
         T.insert(tk.END, listTeamSalary[i])
         T.insert(tk.END, '\n')
+        
+    scroll.config(command = T.yview)
+    T.pack()
 
 drop.bind('<<ComboboxSelected>>', team_changed)
 
@@ -166,14 +167,6 @@ drop.bind('<<ComboboxSelected>>', team_changed)
 ###positions tab
 ttk.Label(positionTab, text = 'NFL Positions Page', font = ('Arial', 25)).pack()
 ttk.Label(positionTab, text = '').pack()
-'''
-positions = ['Quarterback','Running Back', 'Full Back','Wide Receiver',
-           'Tight End','Left Tackle','Left Guard','Center','Right Guard',
-           'Right Tackle','Cornerback','Strong Safety','Free Safety',
-           'Defensive End','Defensive Tackle','Outside Linebacker',
-           'Inside Linebacker','Linebacker','Kicker','Punter']
-avgPosSalaries = [69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,420,69,
-               420,69,420]'''
 
 #positions graph
 figure = plt.Figure(figsize=(6,6), dpi=100)
@@ -186,8 +179,12 @@ ax.bar(position, avgPosSalary, color = positionColors)
 ax.set_title('Average Salaries by Position')
 
 #query and calculate average salary
-avgSalary = 69000
-ttk.Label(positionTab, text = 'The average salary across all positions is: $' + str(avgSalary)).pack()
+db.execute("SELECT AVG(Player.salary) FROM Player")
+for Salary in db:
+    avgSalary2 = Salary[0]
+avgSalary2 = math.trunc(avgSalary2)
+
+ttk.Label(positionTab, text = 'The average salary across all positions is: $' + str(avgSalary2)).pack()
 
 #positions dropdown menu
 ttk.Label(positionTab, text = '').pack()
@@ -195,13 +192,16 @@ ttk.Label(positionTab, text = 'Select a Position').pack()
 selected = StringVar()
 selected.set('                 --------')
 dropPos = ttk.Combobox(positionTab, textvariable = selected)
-dropPos['values'] = positions
+dropPos['values'] = position
 dropPos['state'] = 'readonly'
 dropPos.pack()
 
 listPositionFirstName = [] 
 listPositionLastName = []
 listPositionSalary = []
+
+scroll2 = Scrollbar(positionTab, orient = 'vertical')
+T2 = Text(positionTab, width = 50, yscrollcommand = scroll2.set)
 
 #print table of players by position
 def pos_changed(event):
@@ -212,7 +212,7 @@ def pos_changed(event):
     #ttk.Label(positionTab, text = 'Current Position is ' + str(dropPos.get())).pack()
     currentPos = str(dropPos.get())
     
-    T.delete(0.0,'end')
+    T2.delete(0.0,'end')
     
     db.execute("SELECT Player.firstName, Player.lastName, Player.salary FROM Player, Position WHERE Position.positionid = Player.positionid AND Position.positionname = \'{0}\' ORDER BY Player.salary DESC".format(currentPos))
 
@@ -222,20 +222,23 @@ def pos_changed(event):
         listPositionLastName.append(lastName)
         listPositionSalary.append(salary)
         
-    T.insert(tk.END, 'First Name:')
-    T.insert(tk.END, '\t\t')
-    T.insert(tk.END, 'Last Name:')
-    T.insert(tk.END, '\t\t')
-    T.insert(tk.END, 'Salary:')
-    T.insert(tk.END, '\n')
+    T2.insert(tk.END, 'First Name:')
+    T2.insert(tk.END, '\t\t')
+    T2.insert(tk.END, 'Last Name:')
+    T2.insert(tk.END, '\t\t')
+    T2.insert(tk.END, 'Salary:')
+    T2.insert(tk.END, '\n')
     
-    for i in range(10):
-        T.insert(tk.END, listPositionFirstName[i])
-        T.insert(tk.END, '\t \t')
-        T.insert(tk.END, listPositionLastName[i])
-        T.insert(tk.END, '\t \t')
-        T.insert(tk.END, listPositionSalary[i])
-        T.insert(tk.END, '\n')
+    for i in range(len(listPositionFirstName)):
+        T2.insert(tk.END, listPositionFirstName[i])
+        T2.insert(tk.END, '\t \t')
+        T2.insert(tk.END, listPositionLastName[i])
+        T2.insert(tk.END, '\t \t')
+        T2.insert(tk.END, listPositionSalary[i])
+        T2.insert(tk.END, '\n')
+        
+    scroll2.config(command = T2.yview)
+    T2.pack()
         
 dropPos.bind('<<ComboboxSelected>>', pos_changed)
 
@@ -258,14 +261,56 @@ figure = plt.Figure(figsize=(6,6), dpi=100)
 ax = figure.add_subplot(111)
 ax.tick_params(axis = 'x', rotation = 90)
 chart_type = FigureCanvasTkAgg(figure, coachTab)
-chart_type.get_tk_widget().pack()
+chart_type.get_tk_widget().pack(side = LEFT)
 #x_pos = np.arange(len(coaches))
 ax.bar(listCoachLastName, listCoachSalary, color = teamColors)
 ax.set_title('Salaries for NFL Coaches')
 
-#query and calculate average salary
-ttk.Label(coachTab, text = 'The average salary for NFL coaches is: $' + str(avgSalary)).pack()
+db.execute("SELECT AVG(Coach.salary) FROM Coach")
+for Salary in db:
+    avgSalary3 = Salary[0]
+avgSalary3 = math.trunc(avgSalary3)
 
+#query and calculate average salary
+ttk.Label(coachTab, text = 'The average salary for NFL coaches is: $' + str(avgSalary3)).pack()
+
+scroll3 = Scrollbar(positionTab, orient = 'vertical')
+T3 = Text(coachTab, width = 70, yscrollcommand = scroll3.set)
+
+db.execute("SELECT Coach.salary, Coach.FirstName, Coach.LastName, Team.name FROM Coach, Team WHERE Team.teamid = Coach.teamid ORDER BY Coach.salary DESC")
+listCoachSalaries = []
+listCoachFirstName = []
+listCoachLastName = []
+listCoachTeamName = []
+for Coach in db:
+    salary, firstName, lastName, teamName = Coach
+    listCoachSalaries.append(salary)
+    listCoachFirstName.append(firstName)
+    listCoachLastName.append(lastName)
+    listCoachTeamName.append(teamName)
+        
+T3.insert(tk.END, 'Team Name:')
+T3.insert(tk.END, '\t\t')
+T3.insert(tk.END, 'First Name:')
+T3.insert(tk.END, '\t\t')
+T3.insert(tk.END, 'Last Name:')
+T3.insert(tk.END, '\t\t')
+T3.insert(tk.END, 'Salary:')
+T3.insert(tk.END, '\n')
+    
+for i in range(len(listCoachTeamName)):
+    T3.insert(tk.END, listCoachTeamName[i])
+    T3.insert(tk.END, '\t \t')
+    T3.insert(tk.END, listCoachFirstName[i])
+    T3.insert(tk.END, '\t \t')
+    T3.insert(tk.END, listCoachLastName[i])
+    T3.insert(tk.END, '\t \t')
+    T3.insert(tk.END, listCoachSalaries[i])
+    T3.insert(tk.END, '\n')
+        
+scroll3.config(command = T3.yview)
+T3.pack()
+        
 
 ###mascot tab
 ttk.Label(mascotTab, text = 'NFL Mascots Page', font = ('Arial', 25)).pack()
@@ -286,13 +331,49 @@ figure = plt.Figure(figsize=(6,6), dpi=100)
 ax = figure.add_subplot(111)
 ax.tick_params(axis = 'x', rotation = 90)
 chart_type = FigureCanvasTkAgg(figure, mascotTab)
-chart_type.get_tk_widget().pack()
+chart_type.get_tk_widget().pack(side = LEFT)
 #x_pos = np.arange(len(mascotNames))
 ax.bar(listMascotName, listMascotSalary, color = teamColors)
 ax.set_title('Mascot Salaries')
 
+db.execute("SELECT AVG(Mascot.salary) FROM Mascot")
+for Salary in db:
+    avgSalary4 = Salary[0]
+avgSalary4 = math.trunc(avgSalary4)
+
 #query and calculate average salary
-ttk.Label(mascotTab, text = 'The average salary for NFL mascots is: $' + str(avgSalary)).pack()
+ttk.Label(mascotTab, text = 'The average salary for NFL mascots is: $' + str(avgSalary4)).pack()
+
+scroll4 = Scrollbar(mascotTab, orient = 'vertical')
+T4 = Text(mascotTab, width = 70, yscrollcommand = scroll4.set)
+
+db.execute("SELECT Mascot.salary, Mascot.name, Team.name FROM Mascot, Team WHERE Team.teamid = Mascot.teamid ORDER BY Mascot.salary DESC")
+listMascotSalaries = []
+listMascotName = []
+listMascotTeamName = []
+for Mascot in db:
+    salary, mascotName, teamName = Mascot
+    listMascotSalaries.append(salary)
+    listMascotName.append(mascotName)
+    listMascotTeamName.append(teamName)
+        
+T4.insert(tk.END, 'Mascot Name:')
+T4.insert(tk.END, '\t\t')
+T4.insert(tk.END, 'Team Name:')
+T4.insert(tk.END, '\t\t')
+T4.insert(tk.END, 'Salary:')
+T4.insert(tk.END, '\n')
+    
+for i in range(len(listMascotTeamName)):
+    T4.insert(tk.END, listMascotName[i])
+    T4.insert(tk.END, '\t \t')
+    T4.insert(tk.END, listMascotTeamName[i])
+    T4.insert(tk.END, '\t \t')
+    T4.insert(tk.END, listMascotSalaries[i])
+    T4.insert(tk.END, '\n')
+        
+scroll4.config(command = T4.yview)
+T4.pack()
 
 
 window.mainloop()
